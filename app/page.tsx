@@ -41,7 +41,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-1">
             <CheckCircle className="h-4 w-4 text-violet-600" />
-            <span>Early access pricing</span>
+            <span>Free for early access</span>
           </div>
           <div className="flex items-center gap-1">
             <CheckCircle className="h-4 w-4 text-violet-600" />
