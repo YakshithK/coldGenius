@@ -1,36 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { NextResponse } from 'next/server';
+import { generateEmail } from '@/lib/gemini';
+import { emailFormSchema } from '@/lib/validation';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export async function POST(req: NextRequest) {
-  const { industry, role, offer, tone } = await req.json();
-
-  if (!industry || !role || !offer || !tone) {
-    return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
-  }
-
+export async function POST(request: Request) {
   try {
-    const prompt = `
-Write a cold email targeting a ${role} in the ${industry} industry. 
-The sender is offering ${offer}. 
-The tone should be ${tone}. 
-Keep it under 120 words. Make it personal, clear, and actionable.
-`;
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4-0125-preview',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 300,
+    // Parse request body
+    const body = await request.json();
+    
+    // Validate inputs using Zod
+    const result = emailFormSchema.safeParse(body);
+    
+    if (!result.success) {
+      return NextResponse.json(
+        { 
+          error: 'Validation failed', 
+          details: result.error.format() 
+        }, 
+        { status: 400 }
+      );
+    }
+    
+    // Extract validated data
+    const { industry, role, offer, tone } = result.data;
+    
+    // Generate email with Gemini
+    const generatedEmail = await generateEmail({
+      industry,
+      role,
+      offer,
+      tone,
     });
-
-    const emailContent = completion.choices[0]?.message?.content?.trim() || '';
-
-    return NextResponse.json({ email: emailContent });
+    
+    // Return the generated email
+    return NextResponse.json({ email: generatedEmail });
   } catch (error) {
-    console.error('OpenAI API error:', error);
-    return NextResponse.json({ error: 'Failed to generate email' }, { status: 500 });
+    console.error('Error in email generation API:', error);
+    
+    // Determine the appropriate error message
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'An unexpected error occurred';
+    
+    // Return error response
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    );
   }
-}
+} 

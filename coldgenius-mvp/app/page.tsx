@@ -1,90 +1,64 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import Navbar from '@/components/Navbar';
+import EmailForm from '@/components/EmailForm';
+import EmailResult from '@/components/EmailResult';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAppStore } from '@/lib/store';
 
 export default function Home() {
-  const [industry, setIndustry] = useState<string>('');
-  const [role, setRole] = useState<string>('');
-  const [offer, setOffer] = useState<string>('');
-  const [tone, setTone] = useState<'Casual' | 'Formal' | 'Bold'>('Casual');
-  const [email, setEmail] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const generateEmail = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.post('/api/generate', {
-        industry,
-        role,
-        offer,
-        tone,
-      });
-      setEmail(res.data.email);
-    } catch (error) {
-      console.error(error);
-      alert('Something went wrong!');
-    }
-    setLoading(false);
-  };
+  const { currentEmail } = useAppStore();
+  const hasEmail = !!currentEmail;
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">ColdGenius 🚀</h1>
-
-      <div className="flex flex-col w-full max-w-md space-y-4">
-        <input 
-          type="text" 
-          placeholder="Target Industry" 
-          value={industry} 
-          onChange={(e) => setIndustry(e.target.value)}
-          className="p-2 rounded border"
-        />
-        <input 
-          type="text" 
-          placeholder="Target Role" 
-          value={role} 
-          onChange={(e) => setRole(e.target.value)}
-          className="p-2 rounded border"
-        />
-        <input 
-          type="text" 
-          placeholder="Your Offer" 
-          value={offer} 
-          onChange={(e) => setOffer(e.target.value)}
-          className="p-2 rounded border"
-        />
-        <select 
-          value={tone} 
-          onChange={(e) => setTone(e.target.value as 'Casual' | 'Formal' | 'Bold')}
-          className="p-2 rounded border"
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col">
+      <Navbar />
+      
+      <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
         >
-          <option value="Casual">Casual</option>
-          <option value="Formal">Formal</option>
-          <option value="Bold">Bold</option>
-        </select>
+          <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-800">
+            Write Professional Cold Emails in Seconds
+          </h1>
+          <p className="text-xl text-secondary-600 max-w-3xl mx-auto">
+            Generate personalized, compelling emails with AI - no writing experience required.
+          </p>
+        </motion.div>
 
-        <button
-          onClick={generateEmail}
-          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-          disabled={loading}
-        >
-          {loading ? 'Generating...' : 'Generate Email'}
-        </button>
-
-        {email && (
-          <div className="mt-6 bg-white p-4 rounded shadow">
-            <h2 className="text-xl font-bold mb-2">Generated Email:</h2>
-            <p>{email}</p>
-            <button
-              onClick={() => navigator.clipboard.writeText(email)}
-              className="mt-4 bg-green-500 text-white p-2 rounded hover:bg-green-600"
+        <AnimatePresence mode="wait">
+          {hasEmail ? (
+            // Side-by-side layout when email is generated
+            <motion.div 
+              key="side-by-side"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="max-w-7xl mx-auto grid gap-8 md:grid-cols-2"
             >
-              Copy Email
-            </button>
-          </div>
-        )}
-      </div>
-    </main>
+              <EmailForm />
+              <EmailResult />
+            </motion.div>
+          ) : (
+            // Centered layout when no email is generated
+            <motion.div 
+              key="centered"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="max-w-xl mx-auto"
+            >
+              <EmailForm />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+
+      </main>
+    </div>
   );
-}
+} 

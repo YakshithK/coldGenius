@@ -1,0 +1,78 @@
+PROJECT NAME: ColdGenius  
+TYPE: B2C AI-Powered Cold Email Generator Web App  
+TARGET USERS: Freelancers, solopreneurs, job seekers, founders, creators  
+
+---
+
+SUMMARY:
+ColdGenius is a web-based application that uses Google's Gemini LLM to help users craft short, personalized, and high-performing cold emails for outreach. The platform is designed to eliminate writer’s block and automate the first step of building professional connections—sending the perfect first message.
+
+Instead of manually writing emails, users input key details such as:
+- Industry they’re targeting
+- Role of the recipient
+- What they're offering
+- The tone of the email
+
+ColdGenius uses this structured input to prompt Gemini to generate a concise and actionable cold email under 120 words. The output is designed to feel human, personal, and relevant—maximizing open and response rates.
+
+---
+
+GOALS:
+- Lower the barrier to cold outreach
+- Speed up the email generation process from 30 minutes to 30 seconds
+- Improve email quality with high-converting copy
+- Build trust and authenticity into automated communication
+
+---
+
+TECH STACK:
+- **Frontend**: Next.js 14 (App Router) + TypeScript + Tailwind CSS
+- **Backend**: API Routes in Next.js (Edge functions optional)
+- **AI**: Gemini Pro (via Google AI SDK / Vertex AI APIs)
+- **State Management**: React Hooks (or Zustand if app scales)
+- **Environment**: .env for API keys & config, Vercel or Firebase for deployment
+
+---
+
+AI ARCHITECTURE:
+1. **Input Preprocessing**: User form fields are turned into a structured custom prompt for Gemini.
+2. **Prompt Engineering**: Carefully tuned base prompt to enforce tone, brevity, and structure.
+3. **API Integration**: The request is sent to Gemini Pro using a secure server-side function.
+4. **Postprocessing**: The returned message is cleaned, formatted, and displayed in the UI.
+5. **Feedback loop (future)**: Let users rate results to improve prompt generation over time.
+
+---
+
+MVP FUNCTIONALITY:
+- Responsive frontend with input form (industry, role, offer, tone)
+- Gemini-powered backend that dynamically constructs a prompt and returns the cold email
+- Loading states, error states, and input validation
+- Simple UI with 1-click copy functionality
+- SEO-ready static landing page
+
+---
+
+USER STORY:
+"As a young freelancer trying to find clients, I don’t know how to start writing cold emails. ColdGenius asks me a few simple questions and instantly gives me a polished message I can copy, tweak, and send — all in less than 60 seconds."
+
+---
+
+FUTURE EXPANSION:
+- Auth system (Google OAuth) and user dashboard
+- Saved history of generated emails
+- Multiple email modes: Sales, Hiring, Job Seeking, Fundraising
+- Custom tone sliders (e.g., humorous, formal, edgy)
+- Export to Gmail or LinkedIn
+- Email performance tracking (opens/clicks) via integrations
+- Gemini fine-tuning with usage feedback
+
+---
+
+DIFFERENTIATION:
+ColdGenius is not another email template tool. It’s a true AI-powered email generator with context-aware personalization that feels handcrafted. By using Gemini's latest models, it offers speed, fluency, and security without sacrificing natural language quality.
+
+---
+
+MISSION:
+To democratize effective communication by giving every solo creator or builder a smart writing companion that can open doors to new relationships and opportunities.
+
